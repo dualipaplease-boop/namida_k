@@ -359,7 +359,6 @@ class _SettingsController with SettingsFileWriter {
   double fontScaleLRCFull = 1.0;
 
   bool canAskForBatteryOptimizations = true;
-  bool didSupportNamida = false;
 
   @override
   void applyKuruSettings() {
@@ -1123,7 +1122,6 @@ class _SettingsController with SettingsFileWriter {
     bool? ytMostPlayedCustomisStartOfDay,
     double? fontScaleLRC,
     double? fontScaleLRCFull,
-    bool? didSupportNamida,
     bool? canAskForBatteryOptimizations,
   }) {
     if (language != null) this.language.value = language;
@@ -1388,7 +1386,6 @@ class _SettingsController with SettingsFileWriter {
     if (fontScaleLRC != null) this.fontScaleLRC = fontScaleLRC;
     if (fontScaleLRCFull != null) this.fontScaleLRCFull = fontScaleLRCFull;
 
-    if (didSupportNamida != null) this.didSupportNamida = didSupportNamida;
     if (canAskForBatteryOptimizations != null) this.canAskForBatteryOptimizations = canAskForBatteryOptimizations;
     _writeToStorage();
   }

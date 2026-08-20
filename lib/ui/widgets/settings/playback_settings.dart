@@ -702,7 +702,7 @@ class PlaybackSettings extends SettingSubpageProvider {
           titleText: lang.enableCrossfadeEffect,
           onExpansionChanged: (wasCollapsed) {
             if (wasCollapsed) {
-              SussyBaka.monetize(onEnable: () => settings.player.save(enableCrossFade: true));
+              settings.player.save(enableCrossFade: true);
             } else {
               settings.player.save(enableCrossFade: false);
             }

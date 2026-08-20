@@ -911,7 +911,7 @@ class CustomizationSettings extends SettingSubpageProvider {
                 subtitle: lang.enablePartyModeSubtitle,
                 onChanged: (value) {
                   if (value) return settings.save(enablePartyModeInMiniplayer: false);
-                  SussyBaka.monetize(onEnable: () => settings.save(enablePartyModeInMiniplayer: true));
+                  settings.save(enablePartyModeInMiniplayer: true);
                 },
                 value: settings.enablePartyModeInMiniplayer.valueR,
               ),
