@@ -1,0 +1,75 @@
+name: build_apks
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - branch: main
+            apk_name: namida-optionA
+          - branch: option-b-remove-gate
+            apk_name: namida-optionB
+
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.branch }}
+          submodules: recursive
+          fetch-depth: 1
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: pubspec.yaml
+
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: "17"
+
+      - name: Setup dependencies
+        run: |
+          flutter clean
+          flutter pub get
+          git submodule update --init --remote --recursive
+
+      - name: Create throwaway signing keystore
+        run: |
+          keytool -genkeypair \
+            -v \
+            -keystore android/app/keystore.jks \
+            -alias namida \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -storepass namidapass \
+            -keypass namidapass \
+            -dname "CN=namida, OU=namida, O=namida, L=namida, ST=namida, C=US"
+          cat > android/key.properties <<EOF
+          storePassword=namidapass
+          keyPassword=namidapass
+          keyAlias=namida
+          storeFile=keystore.jks
+          EOF
+
+      - name: Build APK
+        run: |
+          flutter build apk --release --target-platform android-arm64
+          mkdir -p build_final
+          cp build/app/outputs/flutter-apk/app-arm64-v8a-release.apk build_final/${{ matrix.apk_name }}.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.apk_name }}
+          path: build_final/${{ matrix.apk_name }}.apk
+          if-no-files-found: error
