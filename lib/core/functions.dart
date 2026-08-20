@@ -2438,6 +2438,9 @@ class TracksAddOnTap {
 
 class SussyBaka {
   static void monetize({required void Function() onEnable}) {
+    onEnable();
+    return;
+    // ignore: dead_code
     if (settings.didSupportNamida) return onEnable();
     final membership = YoutubeAccountController.membership.userMembershipTypeGlobal.value;
     if (membership != null && membership.index >= MembershipType.cutie.index) return onEnable();
